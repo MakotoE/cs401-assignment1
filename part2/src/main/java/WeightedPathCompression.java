@@ -1,3 +1,6 @@
+/**
+ * Weighted union-find with path compression.
+ */
 public class WeightedPathCompression extends WeightedQuickUnion {
 	public WeightedPathCompression(int n) {
 		super(n);

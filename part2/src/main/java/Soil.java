@@ -9,6 +9,10 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Soil {
+	/**
+	 * Pass path to file as argument. Outputs if the soil drains or does not train.
+	 * @throws IOException file does not exist at path
+	 */
 	public static void main(String[] args) throws IOException {
 		if (args.length == 0) {
 			throw new RuntimeException("path is missing");
@@ -23,6 +27,10 @@ public class Soil {
 		}
 	}
 
+	/**
+	 * @param file soil data
+	 * @return Grid that represents the soil
+	 */
 	public static Grid readFile(Readable file) {
 		var scanner = new Scanner(file);
 		var squares = new Vector<Square>();
@@ -51,6 +59,10 @@ public class Soil {
 		return new Grid(squares.toArray(Square[]::new), width);
 	}
 
+	/**
+	 * Determines if the given soil would drain or not according to the percolation theory.
+	 * @return true if the soil would drain
+	 */
 	public static boolean drains(Grid grid) {
 		var topID = grid.width() * grid.width();
 		var bottomID = topID + 1;
@@ -69,6 +81,9 @@ public class Soil {
 	}
 }
 
+/**
+ * Two connected square IDs.
+ */
 class Pair {
 	public final int a;
 	public final int b;
@@ -104,6 +119,9 @@ enum Square {
 	Drain,
 }
 
+/**
+ * Represents the soil. It can iterate through all draining square pairs.
+ */
 class Grid implements Iterable<Pair> {
 	public Grid(Square[] data, int width) {
 		this.data = data;
@@ -140,7 +158,7 @@ class Grid implements Iterable<Pair> {
 
 				while (index < grid.width * grid.width - 1) {
 					if (index % grid.width == grid.width - 1) {
-						// Skip extra index at edges
+						// Skip extra index at edge
 						index += 2;
 					} else {
 						index++;

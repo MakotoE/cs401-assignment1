@@ -37,8 +37,8 @@ public class Soil {
 
 		var graph = new WeightedPathCompression(grid.width() * grid.width() + 2);
 		for (int i = 0; i < grid.width(); i++) {
-			graph.union(coordinate_to_id(grid.width(), i, 0), topID);
-			graph.union(coordinate_to_id(grid.width(), i, grid.width() - 1), bottomID);
+			graph.union(i, topID);
+			graph.union(grid.width() * (grid.width() - 1) + i, bottomID);
 		}
 
 		for (var pair : grid) {
@@ -46,10 +46,6 @@ public class Soil {
 		}
 
 		return graph.isConnected(topID, bottomID);
-	}
-
-	public static int coordinate_to_id(int width, int x, int y) {
-		return y * width + x;
 	}
 }
 
@@ -122,7 +118,7 @@ class Grid implements Iterable<Pair> {
 					return false;
 				}
 
-				while (true) {
+				while (index < grid.width * grid.width - 1) {
 					if (index % grid.width == grid.width - 1) {
 						// Skip extra index at edges
 						index += 2;
@@ -130,39 +126,35 @@ class Grid implements Iterable<Pair> {
 						index++;
 					}
 
-					if (index >= grid.width * grid.width) {
-						index = 0;
-						vertical = true;
-						break;
-					}
-
 					if (
 						grid.data[index - 1] == Square.Drain
-							&& grid.data[index] == Square.Drain
+						&& grid.data[index] == Square.Drain
 					) {
 						this.next = new Pair(index - 1, index);
 						return true;
 					}
 				}
+
+				index = 0;
+				vertical = true;
 			}
 
 			// Vertical pairs
-			while (true) {
-				if (index >= grid.width * (grid.width - 1)) {
-					this.next = null;
-					return false;
-				} else {
-					index++;
-				}
-
+			while (index < grid.width * (grid.width - 1)) {
 				if (
-					grid.data[index - 1] == Square.Drain
-						&& grid.data[(index - 1) + grid.width] == Square.Drain
+					grid.data[index] == Square.Drain
+					&& grid.data[index + grid.width] == Square.Drain
 				) {
-					this.next = new Pair(index - 1, (index - 1) + grid.width);
+					this.next = new Pair(index, index + grid.width);
+					index++;
 					return true;
 				}
+
+				index++;
 			}
+
+			this.next = null;
+			return false;
 		}
 
 		@Override

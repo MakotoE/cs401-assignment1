@@ -1,8 +1,28 @@
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.util.Vector;
 
 public class Soil {
+	public static void main(String[] args) throws IOException {
+		if (args.length == 0) {
+			throw new RuntimeException("path is missing");
+		}
+
+		try (var file = Files.newBufferedReader(Path.of(args[0]))) {
+			if (drains(readFile(file))) {
+				System.out.println("Allows water to drain");
+			} else {
+				System.out.println("Don’t allow water to drain");
+			}
+		}
+	}
+
 	public static Grid readFile(Readable file) {
 		var scanner = new Scanner(file);
 		var squares = new Vector<Square>();
